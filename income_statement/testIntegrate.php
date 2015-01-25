@@ -1,7 +1,25 @@
 ﻿<?php
+$season = ['102-1.csv', '102-2.csv', '102-3.csv', '102-4.csv', '103-1.csv', '103-2.csv', '103-3.csv'];
 
-$file_contents = file_get_contents('102-1.csv');
-var_dump($file_contents);
+// 分類到各個nameOfShare
+foreach ($season as $key => $value) {
+    $test = array();
+    $file_contents[$key] = file_get_contents($season[$key]);
+    $test = explode("\r", $file_contents[$key]);
+    $dis = new DeconstructureIncomeStatement($test);
+
+    //for ($i = 1; $i < count($test); $i++) {
+    for ($i = 1; $i < 2; $i++) {
+        if (',' == substr($test[$i], -1)) {
+            $test[$i] = substr($test[$i], 0 , -1);
+        }
+        $listOfShare[$i] = explode(',', $test[$i]);
+        $listOfShare[$i] = $dis->getKeyArray($listOfShare[$i]);
+        file_put_contents('classifyByList/' . trim($listOfShare[$i]['code']) . '.csv', $test[$i] . "\r", FILE_APPEND);
+    }
+}
+
+
 class DeconstructureIncomeStatement
 {
     public $nominalList = [
