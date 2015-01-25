@@ -73,4 +73,12 @@ class DeconstructureIncomeStatement
     {
         $this->raw = $raw;
     }
+
+    /**
+     * key and value
+     */
+    public function getKeyArray(array $companyIS)
+    {
+        return array_combine($this->nominalList, $companyIS);
+    }
 }
