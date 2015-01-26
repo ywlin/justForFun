@@ -19,7 +19,11 @@ foreach ($season as $key => $value) {
     }
 }
 
+$files = $dis->getAllFileArray();
+$ratioList = $dis->getIncomeStateRatio($files);
+$dis->writeToCsv($ratioList);
 
+//var_dump($ratioList);
 class DeconstructureIncomeStatement
 {
     /**
