@@ -131,4 +131,16 @@ class DeconstructureIncomeStatement
         }
         return $files;
     }
+
+    public function writeToCsv(array $ratioList)
+    {
+        $fp = fopen('file.csv', 'w');
+
+        foreach ($ratioList as $fields) {
+            foreach ($fields as $field) {
+                fputcsv($fp, $field);
+            }
+        }
+        fclose($fp);
+    }
 }
