@@ -118,4 +118,17 @@ class DeconstructureIncomeStatement
     {
         return array_combine($this->nominalList, $companyIS);
     }
+
+    public function getAllFileArray()
+    {
+        if ($handle = opendir('./classifyByList')) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != "..") {
+                    $files[] = $entry;
+                }
+            }
+            closedir($handle);
+        }
+        return $files;
+    }
 }
