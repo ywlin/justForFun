@@ -74,6 +74,43 @@ class DeconstructureIncomeStatement
         $this->raw = $raw;
     }
 
+
+    public function getIncomeStateRatio(array $files)
+    {
+        foreach ($files as $filename) {
+            $contents = file_get_contents('./classifyByList/' . $filename);
+            $content[$filename] = explode("\r", $contents);
+            $ratioList[$filename]['filename'][] = $filename;
+            $ratioList[$filename]['COGSratio'][] = 'COGSratio營業成本率';
+            $ratioList[$filename]['grossGrow'][] = 'grossGrow營業毛利率';
+            $ratioList[$filename]['operationNet'][] = 'operationNet營業利益率';
+            $ratioList[$filename]['ratioOperatingRevenue'][] = 'ratioOperatingRevenue營業收入成長比例';
+            $ratioList[$filename]['costAndExpense'][] = 'costAndExpense營業費用成長比例';
+
+            for ($i = 0; $i < count($content[$filename]) - 1; $i++) {
+                $content[$filename][$i] = explode(',', $content[$filename][$i]);
+                $content[$filename][$i] = $this->getKeyArray($content[$filename][$i]);
+                // 營業成本率
+                $ratioList[$filename]['COGSratio'][] = round($content[$filename][$i]['costOfGoodsSold'] / $content[$filename][$i]['operatingRevenue'], 2);
+                // 營業毛利率
+                $ratioList[$filename]['grossGrow'][] = round($content[$filename][$i]['operatingGross'] / $content[$filename][$i]['operatingRevenue'] , 2);
+                // 營業利益率
+                $ratioList[$filename]['operationNet'][] = round($content[$filename][$i]['operatingProfits'] / $content[$filename][$i]['operatingRevenue'], 2);
+                if ($i > 0) {
+                    // 營業收入 成長比例
+                    $thisOR = $content[$filename][$i]['operatingRevenue'];
+                    $lastOR = $content[$filename][$i - 1]['operatingRevenue'];
+                    $ratioList[$filename]['ratioOperatingRevenue'][$i] = round(($thisOR - $lastOR) / $lastOR, 2);
+
+                    // 營業費用 成長比例
+                    $thisS = $content[$filename][$i]['costOfGoodsSold'] + $content[$filename][$i]['operatingExpense'];
+                    $lastS = $content[$filename][$i - 1]['costOfGoodsSold'] + $content[$filename][$i - 1]['operatingExpense'];
+                    $ratioList[$filename]['costAndExpense'][$i] = round(($thisS - $lastS) / $lastS, 2);
+                }
+            }
+        }
+        return $ratioList;
+    }
     /**
      * key and value
      */
